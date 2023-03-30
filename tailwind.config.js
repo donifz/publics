@@ -17,6 +17,7 @@ module.exports = {
       colors:{
         background:"#151316",
         purple:"#2E222F",
+        stroke:"rgba(255, 255, 255, 0.5)"
 
       },
       fontFamily: {

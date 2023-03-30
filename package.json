@@ -12,6 +12,8 @@
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
     "json-loader": "^0.5.7",
+    "mobx": "^6.9.0",
+    "mobx-react-lite": "^3.4.3",
     "next": "13.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0"
