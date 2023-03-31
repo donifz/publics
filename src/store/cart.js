@@ -19,11 +19,14 @@ class Store {
             minusPostRu:action,
             addStoryRu:action,
             minusStoryRu:action
+            
         });
     }
 
     get checkDb(){
-        return this.kgData.filter((item)=> item.post.qty>0&& item.stories.qty>0 )
+        return [...this.kgData, ...this.ruData].filter((item)=>{
+            return item.post.qty>0 || item.stories.qty>0
+        }  )
     }
     get total(){
         return this.kgData.reduce((prev,cure)=>{
@@ -31,6 +34,7 @@ class Store {
         },0)
     }
     addPost(name){
+        console.log(this.checkDb);
         const found = this.kgData.map((item)=> {
             if(item.name === name){
                 return {...item, post: {...item.post, qty: item.post.qty+1}}

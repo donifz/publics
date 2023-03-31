@@ -106,7 +106,7 @@ const RuPublics = observer(() => {
                 </menu>
           </div>
           <div className='flex justify-center pb-12 pt-5'>
-                <button style={{background:"linear-gradient(90.3deg, #9C3FE4 0.16%, #C65647 101.62%)"}} className='w-[314px]  h-[50px] rounded-[5px] text-white'>Дальше</button>
+                <button style={{background:"linear-gradient(90.3deg, #9C3FE4 0.16%, #C65647 101.62%)"}} onClick={()=>router.push('/infoForm')} className='w-[314px]  h-[50px] rounded-[5px] text-white'>Дальше</button>
 
             </div>
           <div className='w-full flex justify-center fixed bottom-3 '>
