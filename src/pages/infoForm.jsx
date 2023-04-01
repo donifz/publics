@@ -6,15 +6,23 @@ import download from "../icons/download.svg";
 import { useState } from 'react';
 import axios from 'axios';
 import Store from '@/store/cart';
+import { storage } from '../firebase';
+import { getDownloadURL, ref, uploadBytes, uploadBytesResumable } from 'firebase/storage';
+import { v4 } from "uuid";
+import { ProgressBar } from '@/components/ProgressBar';
+
+
 const InfoForm = () => {
-    const [file, setFile] = useState()
+    const [progress, setProgress] = useState(0)
     const [upload, setUpload] = useState()
     const [success, setSuccess] = useState(false)
+    const [videoLink, setVideoLink] = useState(false)
     const TOKEN = "5882906599:AAEAPrWd6JA8uIBzHodgFrJyHlqaeXXZ_cw"
     const CHAT_ID = "-1001968275556"
     const URL_API_MESSAGE = `https://api.telegram.org/bot${TOKEN}/sendMessage`
     const URL_API_DOCUMENT = `https://api.telegram.org/bot${TOKEN}/sendDocument`
     const URL_API_Video = `https://api.telegram.org/bot${TOKEN}/sendVideo`
+    // const uploader = createTelegraphUploader();
     
     const [responseBody, setResponseBody] = useState({second:"",main:""})
     const inputChangeHandler = (event ) => {
@@ -24,8 +32,11 @@ const InfoForm = () => {
     }
 
 
-    const handlePhoto = (event) =>{
+    const handlePhoto = async (event) =>{
         setUpload(event.target.files[0])
+        console.log(event.target.files[0]);
+        // const telegraphUrl = await uploadByBuffer(event.target.files[0], 'image/png')
+        //   console.log(telegraphUrl);
     }
     const uploadFile = async (result) =>{
         let type = upload.type==="image/jpeg"?{url:URL_API_DOCUMENT, name:"document"}:{url:URL_API_Video, name:"video"}
@@ -38,16 +49,76 @@ const InfoForm = () => {
         await axios.post(type.url,formData, {
             headers:{
                 "Content-Type":"multipart/form-data"
+            },
+            onUploadProgress: (progressEvent) => {
+              const {loaded, total} = progressEvent;
+              let percent = Math.floor( (loaded * 100) / total )
+              console.log( `${loaded}kb of ${total}kb | ${percent}%` );
+      
+              // if( percent < 100 ){
+              //   log
+                setProgress(percent)
+              // }
             }
+
         } )
         setSuccess(true);
     }
 
+  
+
+    const fireUpload =  () =>{
+      return new Promise((resolve, reject) =>{
+        const imageRef = ref(storage, `images/${upload.name+v4()}`)
+       const uploadFire = uploadBytesResumable(imageRef, upload)
+       uploadFire.on('state_changed', 
+       (snapshot) => {
+         // Observe state change events such as progress, pause, and resume
+         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+         console.log('Upload is ' + progress + '% done');
+         setProgress(progress)
+         switch (snapshot.state) {
+           case 'paused':
+             console.log('Upload is paused');
+             break;
+           case 'running':
+             console.log('Upload is running');
+             break;
+         }
+       }, 
+       (error) => {
+         // Handle unsuccessful uploads
+       }, 
+       () => {
+         // Handle successful uploads on complete
+         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+         return getDownloadURL(uploadFire.snapshot.ref).then((downloadURL) =>{
+          resolve(downloadURL)
+         } );
+       }
+     );
+     })
+      
+      // const fileUrl = await getDownloadURL(imageRef)
+      // console.log(fileUrl);
+      // setVideoLink(()=>fileUrl)
+      // return fileUrl
+    }
+
     const handleSubmit = async (e) =>{
         e.preventDefault()
+        let bigFile = ""
+
+        if(upload.size >49000000){
+          
+          bigFile = await fireUpload()
+          console.log(bigFile);
+        }
         let message = ""
             message += `<b>Заголовок: ${responseBody.main}</b>\n`
             message += `<b>Текст: ${responseBody.second}</b>\n`
+            message += `<b>Ссылка на видео: ${bigFile}</b>\n`
             message += `----------------------------\n`
         Store.checkDb.forEach((item)=>{
             message += `<b>Канал: ${item.name}</b>\n`
@@ -55,20 +126,29 @@ const InfoForm = () => {
             message += `----------------------------\n`
         })
 
-        axios.post(URL_API_MESSAGE, {
+        const sendTg = await axios.post(URL_API_MESSAGE, {
             chat_id:CHAT_ID,
             parse_mode:'html',
             text:message
         })
-        .then((res)=>{
-            if(res.data.ok){
-                console.log("seuccess");
-                uploadFile(res.data.result)
-            }
-        })
-        .catch((e)=>{
-            setFile({})
-        })
+        if(sendTg.data.ok){
+          console.log("seuccess");
+                  if(upload.size <49000000){
+                    await uploadFile(sendTg.data.result)
+                  }
+              }
+        
+        // .then((res)=>{
+        //     if(res.data.ok){
+        //         console.log("seuccess");
+        //         if(upload.size <49000000){
+        //           uploadFile(res.data.result)
+        //         }
+        //     }
+        // })
+        // .catch((e)=>{
+        //     setFile({})
+        // })
     }
 
 
@@ -112,12 +192,13 @@ const InfoForm = () => {
             className='rounded-lg mt-2 pt-3 border-[.5px] border-stroke w-full  px-[13px] hidden'
             />
         </label>
+      {progress&&<ProgressBar progressPercentage={progress}/>}
         <div className='flex justify-center pb-12 pt-5'>
                 <button style={{background:"linear-gradient(90.3deg, #9C3FE4 0.16%, #C65647 101.62%)"}} className='w-[314px]  h-[50px] rounded-[5px] text-white'>Дальше</button>
 
             </div>
       </form>
-      {success&&<div className='rounded-lg mt-2 pt-3 border-[.5px] text-white text-center bg-green-600 border-stroke w-full h-[59px] px-[13px]'>Успешно отправлен</div>}
+      {/* {success&&<div className='rounded-lg mt-2 pt-3 border-[.5px] text-white text-center bg-green-600 border-stroke w-full h-[59px] px-[13px]'>Успешно отправлен</div>} */}
     </div>
 </Layout>
   )
