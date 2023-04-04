@@ -7,7 +7,9 @@ const Layout = ({children}) => {
           <div style={{background:"radial-gradient(50% 50% at 50% 50%, #B379DF 0%, rgba(54, 0, 96, 0) 100%)", }} 
               className="absolute -left-1/2 -top-[220px] w-[397px] h-[397px] opacity-50">
           </div>
-                {children}
+            <div className="md:w-[480px] mx-auto">
+                  {children}
+            </div>
           </div>
   )
 }

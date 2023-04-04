@@ -20,7 +20,7 @@ const RuPublics = observer(() => {
     const router = useRouter()
   return (
     <Layout>
-        <div className='pt-[63px]'>
+        <div className='pt-[63px] relative'>
             <h1 className='font-extrabold text-white  text-xl text-center mb-[39px]'>Русскоязычные паблики <br /> инстаграм</h1>
             <div className='flex justify-around  absolute top-36 left-0  w-full'>
                     <div style={{background:"linear-gradient(180deg, #6110B2 0%, #9445D3 100%)"}} 
@@ -120,7 +120,7 @@ const RuPublics = observer(() => {
                 <button style={{background:"linear-gradient(90.3deg, #9C3FE4 0.16%, #C65647 101.62%)"}} onClick={()=>router.push('/infoForm')} className='w-[314px]  h-[50px] rounded-[5px] text-white'>Дальше</button>
 
             </div>
-          <div className='w-full flex justify-center fixed bottom-3 '>
+          <div className='w-full flex justify-center fixed bottom-3 md:w-[480px]'>
 
             <div style={{background:"linear-gradient(180deg, #334764 0%, #1A1518 100%)"}} className='w-[269px] h-[62px] border-[.5px] border-stroke  rounded-[5px] text-white flex flex-col items-center justify-center'>
                 <p>Итог:</p>
