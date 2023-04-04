@@ -6,6 +6,8 @@ class Store {
     choosen=[]
     kgData = kgDB
     ruData = db
+    searchKg = ""
+    searchRu = ""
     constructor() {
         makeObservable(this, {
             choosen:observable,
@@ -18,8 +20,10 @@ class Store {
             addPostRu:action,
             minusPostRu:action,
             addStoryRu:action,
-            minusStoryRu:action
-            
+            minusStoryRu:action,
+            searchKg:observable,
+            searchRu:observable,
+            moreSubscribersAction:action
         });
     }
 
@@ -32,6 +36,77 @@ class Store {
         return this.kgData.reduce((prev,cure)=>{
             return prev+((cure.post.price*cure.post.qty)+(cure.stories.price*cure.stories.qty))
         },0)
+    }
+    get searchedKg (){
+        return this.kgData.filter((item)=>{
+            return item.name.includes(this.searchKg)
+        })||[]
+    }
+    get searchedRu (){
+        return this.ruData.filter((item)=>{
+            return item.name.includes(this.searchRu)
+        })||[]
+    }
+    get moreSubscribers (){
+        return this.kgData.sort((a,b) =>{
+            if (a.followersNumber < b.followersNumber) {
+                return 1;
+              }
+              if (a.followersNumber > b.followersNumber) {
+                return -1;
+              }
+              // a должно быть равным b
+              return 0;
+        })
+        
+    }
+    get moreSubscribers (){
+        return this.kgData.sort((a,b) =>{
+            return a.followersNumber - b.followersNumber
+        })
+        
+    }
+    get lessSubscribers (){
+        return this.kgData.sort((a,b) =>{
+            return b.followersNumber - a.followersNumber
+        })
+        
+    }
+    get moreSubscribersRu (){
+        return this.searchedRu.sort((a,b) =>{
+            return a.followersNumber - b.followersNumber
+        })
+        
+    }
+    get lessSubscribersRu (){
+        return this.searchedRu.sort((a,b) =>{
+            return b.followersNumber - a.followersNumber
+        })
+        
+    }
+
+    moreSubscribersAction(type){
+        if(type === "less"){
+            this.kgData = this.lessSubscribers
+        }else{
+            this.kgData = this.moreSubscribers
+
+        }
+    }
+    moreSubscribersActionRu(type){
+        if(type === "less"){
+            this.ruData = this.lessSubscribersRu
+        }else{
+            this.ruData = this.moreSubscribersRu
+
+        }
+    }
+    
+    searchRu(name){
+        this.ruData =  this.kgData.filter((item)=>{
+            return item.name == name
+        })
+        
     }
     addPost(name){
         console.log(this.checkDb);

@@ -3,7 +3,7 @@
     [
     { name:"maalymat.kg",
     followers:"1,4 млн подписчиков",
-    followers_number:1400000,
+    followersNumber:1400000,
     img:require("./images/maalymat.kg.png"),
     limit:100,
     service: ["Пост", "Сторис"],

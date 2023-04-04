@@ -187,7 +187,7 @@ const InfoForm = () => {
             <Image src={download} alt="download"/>
                 <p className='text-stroke'>Загрузите фото или видео</p>
             </div>  
-            <input name='fileInput' type="file" onChange={handlePhoto} style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 
+            <input required name='fileInput' type="file" onChange={handlePhoto} style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 
             placeholder='Напишите примерный заголовок'
             className='rounded-lg mt-2 pt-3 border-[.5px] border-stroke w-full  px-[13px] hidden'
             />

@@ -3,7 +3,7 @@
     [
     { name:"news.kg",
     followers:"1,5 млн подписчиков",
-    followers_number:1500000,
+    followersNumber:1500000,
     img:require("./images/newskg.png"),
     limit:100,
     service: ["Пост", "Сторис"],

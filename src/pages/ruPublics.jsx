@@ -1,6 +1,6 @@
 import Layout from '@/Layout'
 import Image from 'next/image';
-import search from "../icons/search.svg";
+import searchImg from "../icons/search.svg";
 import down from "../icons/arrow.svg";
 import activeBtn from "../icons/activeBtn.png";
 import db from "../db";
@@ -35,23 +35,34 @@ const RuPublics = observer(() => {
                 
                 <div className='flex gap-[17px] -top-7 relative z-10 w-full'>
                 <button className='bg-purple text-white text-xs w-full h-[55px] justify-center rounded-[5px] flex items-center relative'>Выберите из списка 
-                        {router.pathname === "/ruPublics" &&<Image className='absolute right-[45%] -bottom-4' src={activeBtn}/>}
+                        {router.pathname === "/ruPublics" &&<Image className='absolute right-[45%] -bottom-4' src={activeBtn} />}
                     </button>
                     <button className='bg-purple text-white text-xs w-full h-[55px] justify-center rounded-[5px] flex items-center' onClick={()=>router.push('/ruPackages')}>Готовые пакеты</button>
                 </div>
                 <div className='relative w-full min-h-full mb-[22px]'>
-                    <input type="text" className='border-[.5px] border-stroke rounded-[5px] h-[49px] w-full bg-transparent pr-[40px] pl-2 text-white' />
-                    <Image src={search} alt="search" className='absolute right-3 top-2.5 '/>
+                    <input type="text" 
+                        onChange={(e)=>{
+                            Store.searchRu = e.target.value;
+                        }} 
+                            value={Store.searchRu}  
+                        className='border-[.5px]  border-stroke rounded-[5px] h-[49px] w-full bg-transparent pr-[40px] pl-2 text-white' />
+                    <Image src={searchImg} alt="search" className='absolute right-3 top-2.5 '/>
                 </div>
                 <div className='flex justify-center items-center gap-1 text-white mb-[21px]'>
                     <p>Фильтр:</p> 
-                    <div className='px-[19px] py-[6px] flex gap-1 items-center border-[.5px] border-stroke rounded-[5px]'>
-                           <p>Количество подписчиков</p>
+                    <div className='group relative px-[19px] py-[6px] flex flex-col gap-1 items-center border-[.5px] border-stroke rounded-[5px]'>
+                           <div className='flex'>
+                           <p className='flex items-center'>Количество подписчиков</p>
                                 <Image src={down} alt="down" className=' flex items-end pt-2'/> 
+                            </div> 
+                                <div className='group-hover:block hidden w-[250px] absolute -bottom-[68px] rounded-[5px] text-[15px]  px-5 py-2.5 bg-[#181416] text-white' >
+                                    <p onClick={()=> Store.moreSubscribersActionRu("more")}>Цена по возрастанию</p>
+                                    <p  onClick={()=> Store.moreSubscribersActionRu("less")}>Цена по убыванию</p>
+                                </div>
                     </div>
                 </div>
                 <menu className='mt-42px flex flex-col gap-3.5'>
-                    {Store.ruData.map(item=>{
+                    {Store.searchedRu.map(item=>{
                         return (
                             <label key={item.name}  className="flex flex-col border-[.5px] border-stroke rounded-[16px] px-3 py-3">
                             <div className='flex gap-3'>
