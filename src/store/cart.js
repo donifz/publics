@@ -39,12 +39,12 @@ class Store {
     }
     get searchedKg (){
         return this.kgData.filter((item)=>{
-            return item.name.includes(this.searchKg)
+            return item.name.toLowerCase().includes(this.searchKg.toLowerCase())
         })||[]
     }
     get searchedRu (){
         return this.ruData.filter((item)=>{
-            return item.name.includes(this.searchRu)
+            return item.name.toLowerCase().includes(this.searchRu.toLowerCase())
         })||[]
     }
     get moreSubscribers (){
