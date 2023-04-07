@@ -20,9 +20,9 @@ const RuPublics = observer(() => {
     const router = useRouter()
   return (
     <Layout>
-        <div className='pt-[63px] relative'>
+        <div className='pt-[63px] md:w-[480px] mx-auto relative'>
             <h1 className='font-extrabold text-white  text-xl text-center mb-[39px]'>Русскоязычные паблики <br /> инстаграм</h1>
-            <div className='flex justify-around  absolute top-36 left-0  w-full'>
+            <div className='flex justify-around lg:justify-center lg:gap-36 top-36 left-0 w-full fixed'>
                     <div style={{background:"linear-gradient(180deg, #6110B2 0%, #9445D3 100%)"}} 
                     className="w-[93px] h-[93px] rounded-full"></div>
                     <div className="w-[93px] h-[93px] rounded-full" style={{background:"linear-gradient(180deg, #6110B2 0%, #9445D3 100%)"}}></div>
