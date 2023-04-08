@@ -117,14 +117,20 @@ const RuPublics = observer(() => {
                 </menu>
           </div>
           <div className='flex justify-center pb-12 pt-5'>
-                <button style={{background:"linear-gradient(90.3deg, #9C3FE4 0.16%, #C65647 101.62%)"}} onClick={()=>router.push('/infoForm')} className='w-[314px]  h-[50px] rounded-[5px] text-white'>Дальше</button>
+          <button style={{background:"linear-gradient(90.3deg, #9C3FE4 0.16%, #C65647 101.62%)"}} className='w-[314px]  h-[50px] rounded-[5px] text-white' 
+                onClick={()=>{
+                    if(Store.total === 0){
+                        return
+                    }
+                    router.push('/infoForm')
+                }}>Дальше</button>
 
             </div>
           <div className='w-full flex justify-center fixed bottom-3 md:w-[480px]'>
 
             <div style={{background:"linear-gradient(180deg, #334764 0%, #1A1518 100%)"}} className='w-[269px] h-[62px] border-[.5px] border-stroke  rounded-[5px] text-white flex flex-col items-center justify-center'>
                 <p>Итог:</p>
-                <p className='text-[25px] '>{Store.totalRu}</p>
+                <p className='text-[25px] '>{Store.total}</p>
             </div>
             
           </div>

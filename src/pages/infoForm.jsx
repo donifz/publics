@@ -3,6 +3,7 @@ import Image from 'next/image';
 import arrow from "../icons/arrowCircle.svg";
 import line from "../icons/line.svg";
 import download from "../icons/download.svg";
+import Loading from "../icons/loader.svg";
 import { useState } from 'react';
 import axios from 'axios';
 import Store from '@/store/cart';
@@ -10,11 +11,14 @@ import { storage } from '../firebase';
 import { getDownloadURL, ref, uploadBytes, uploadBytesResumable } from 'firebase/storage';
 import { v4 } from "uuid";
 import { ProgressBar } from '@/components/ProgressBar';
+import { useRouter } from 'next/router';
+import { observer } from 'mobx-react-lite';
 
 
-const InfoForm = () => {
-    const [progress, setProgress] = useState(0)
-    const [upload, setUpload] = useState()
+const InfoForm = observer(() => {
+    const router = useRouter()
+    const [progress, setProgress] = useState(null)
+    const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
     const [videoLink, setVideoLink] = useState(false)
     const TOKEN = "5882906599:AAEAPrWd6JA8uIBzHodgFrJyHlqaeXXZ_cw"
@@ -24,27 +28,30 @@ const InfoForm = () => {
     const URL_API_Video = `https://api.telegram.org/bot${TOKEN}/sendVideo`
     // const uploader = createTelegraphUploader();
     
-    const [responseBody, setResponseBody] = useState({second:"",main:""})
+    // const [responseBody, setResponseBody] = useState({second:"",main:""})
     const inputChangeHandler = (event ) => {
         const {name, value} = event.target
-        setResponseBody({...responseBody, [name]: value})
-       
-    }
+        // setResponseBody({...responseBody, [name]: value})
+        Store.form ={...Store.form, [name]: value}
+        
+        console.log(Store.form);
+      }
 
 
     const handlePhoto = async (event) =>{
-        setUpload(event.target.files[0])
-        console.log(event.target.files[0]);
+        // setUpload(event.target.files[0])
+        Store.form = {...Store.form, file: event.target.files[0]}
+        console.log(Store.form);
         // const telegraphUrl = await uploadByBuffer(event.target.files[0], 'image/png')
         //   console.log(telegraphUrl);
     }
     const uploadFile = async (result) =>{
-        let type = upload.type==="image/jpeg"?{url:URL_API_DOCUMENT, name:"document"}:{url:URL_API_Video, name:"video"}
+        let type = Store.form.file.type==="image/jpeg"?{url:URL_API_DOCUMENT, name:"document"}:{url:URL_API_Video, name:"video"}
         const formData = new FormData();
         formData.append('chat_id',CHAT_ID);
-        formData.append(type.name,upload);
+        formData.append(type.name,Store.form.file);
         formData.append('reply_to_message_id',result.message_id);
-        formData.append('caption',responseBody.main);
+        formData.append('caption',Store.form.title);
 
         await axios.post(type.url,formData, {
             headers:{
@@ -69,8 +76,8 @@ const InfoForm = () => {
 
     const fireUpload =  () =>{
       return new Promise((resolve, reject) =>{
-        const imageRef = ref(storage, `images/${upload.name+v4()}`)
-       const uploadFire = uploadBytesResumable(imageRef, upload)
+        const imageRef = ref(storage, `images/${Store.form.file.name+v4()}`)
+       const uploadFire = uploadBytesResumable(imageRef, Store.form.file)
        uploadFire.on('state_changed', 
        (snapshot) => {
          // Observe state change events such as progress, pause, and resume
@@ -108,16 +115,17 @@ const InfoForm = () => {
 
     const handleSubmit = async (e) =>{
         e.preventDefault()
+        setLoading(true)
         let bigFile = ""
 
-        if(upload.size >49000000){
+        if(Store.form.file.size >49000000){
           
           bigFile = await fireUpload()
           console.log(bigFile);
         }
         let message = ""
-            message += `<b>Заголовок: ${responseBody.main}</b>\n`
-            message += `<b>Текст: ${responseBody.second}</b>\n`
+            message += `<b>Заголовок: ${Store.form.title}</b>\n`
+            message += `<b>Текст: ${Store.form.text}</b>\n`
             message += `<b>Ссылка на видео: ${bigFile}</b>\n`
             message += `----------------------------\n`
         Store.checkDb.forEach((item)=>{
@@ -133,22 +141,14 @@ const InfoForm = () => {
         })
         if(sendTg.data.ok){
           console.log("seuccess");
-                  if(upload.size <49000000){
+                  Store.form.message_id = sendTg.data.result.message_id
+                  if(Store.form.file.size <49000000){
                     await uploadFile(sendTg.data.result)
                   }
+                router.push('/payment')
               }
-        
-        // .then((res)=>{
-        //     if(res.data.ok){
-        //         console.log("seuccess");
-        //         if(upload.size <49000000){
-        //           uploadFile(res.data.result)
-        //         }
-        //     }
-        // })
-        // .catch((e)=>{
-        //     setFile({})
-        // })
+              setLoading(false)
+
     }
 
 
@@ -169,14 +169,14 @@ const InfoForm = () => {
       <form className='text-white flex flex-col gap-5' onSubmit={handleSubmit}>
         <label >
           <p>Заголовок</p>  
-            <input onChange={inputChangeHandler} name='main' type="text" style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 
+            <input onChange={inputChangeHandler} name='title' type="text" style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 
             placeholder='Напишите примерный заголовок'
             className='rounded-lg mt-2 border-[.5px] border-stroke w-full h-[59px] px-[13px]'
             />
         </label>
         <label >
           <p>Текст под пост</p>  
-            <textarea onChange={inputChangeHandler} name="second" style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 
+            <textarea onChange={inputChangeHandler} name="text" style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 
             placeholder='Напишите примерный заголовок'
             className='rounded-lg mt-2 pt-3 border-[.5px] border-stroke w-full h-[59px] px-[13px]'
             />
@@ -194,7 +194,7 @@ const InfoForm = () => {
         </label>
       {progress&&<ProgressBar progressPercentage={progress}/>}
         <div className='flex justify-center pb-12 pt-5'>
-                <button style={{background:"linear-gradient(90.3deg, #9C3FE4 0.16%, #C65647 101.62%)"}} className='w-[314px]  h-[50px] rounded-[5px] text-white'>Дальше</button>
+                <button style={{background:"linear-gradient(90.3deg, #9C3FE4 0.16%, #C65647 101.62%)"}} className='w-[314px]  h-[50px] rounded-[5px] text-white flex justify-center items-center gap-2'>Дальше {loading&&<Image width={24} src={Loading} alt='load' />}</button>
 
             </div>
       </form>
@@ -202,6 +202,6 @@ const InfoForm = () => {
     </div>
 </Layout>
   )
-}
+})
 
 export default InfoForm

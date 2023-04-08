@@ -10,3 +10,16 @@
         margin: 0;
     }
 }
+
+.react-datetime-picker__wrapper{
+    border: 0px solid red !important;
+}
+.react-datetime-picker__inputGroup{
+    color: #fff !important;
+}
+.react-datetime-picker__calendar-button svg{
+    stroke: #fff !important;
+}
+.react-datetime-picker__clear-button svg{
+    stroke: #fff !important;
+}

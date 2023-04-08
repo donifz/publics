@@ -8,6 +8,12 @@ class Store {
     ruData = db
     searchKg = ""
     searchRu = ""
+    form = {
+        title: "",
+        text:"",
+        file:null,
+        message_id:""    
+    }
     constructor() {
         makeObservable(this, {
             choosen:observable,
@@ -33,7 +39,7 @@ class Store {
         }  )
     }
     get total(){
-        return this.kgData.reduce((prev,cure)=>{
+        return [...this.kgData, ...this.ruData].reduce((prev,cure)=>{
             return prev+((cure.post.price*cure.post.qty)+(cure.stories.price*cure.stories.qty))
         },0)
     }
