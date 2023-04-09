@@ -14,6 +14,28 @@ class Store {
         file:null,
         message_id:""    
     }
+    corousel = [
+        {
+            id:"1",
+            file:null,
+        },
+        {
+            id:"2",
+            file:null,
+        },
+        {
+            id:"3",
+            file:null,
+        },
+        {
+            id:"4",
+            file:null,
+        },
+        {
+            id:"5",
+            file:null,
+        },
+    ]
     constructor() {
         makeObservable(this, {
             choosen:observable,
@@ -29,7 +51,9 @@ class Store {
             minusStoryRu:action,
             searchKg:observable,
             searchRu:observable,
-            moreSubscribersAction:action
+            moreSubscribersAction:action,
+            corousel:observable,
+            form:observable,
         });
     }
 

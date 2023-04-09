@@ -39,6 +39,7 @@ const Payment = observer(() => {
         setPreview( await toBase64(event.target.files[0]))
     }
     const uploadCheck = async()=>{
+      if(Store.total === 0) return
         const date = `${time.getDate()}.${time.getMonth()+1}.${time.getFullYear()} ${time.getHours()}:${(""+time.getMinutes()).length ===1?"0"+time.getMinutes():time.getMinutes()}`
         // let type = check.file.type==="image/jpeg"?{url:URL_API_DOCUMENT, name:"document"}:{url:URL_API_Video, name:"video"}
         const formData = new FormData();
