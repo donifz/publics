@@ -281,6 +281,7 @@ console.log(Store.corousel);
             className='rounded-lg mt-2 pt-3 border-[.5px] border-stroke w-full  px-[13px] hidden'
             />
         </label>
+          {progress&&<ProgressBar progressPercentage={progress}/>}
         <p>Фотография или видео в формате 1x1 (карусель)</p>
         <div className='flex gap-4 overflow-x-scroll'>
           {Store.corousel.map(item=>{
@@ -293,12 +294,11 @@ console.log(Store.corousel);
                 placeholder='Напишите примерный заголовок'
                 className='rounded-lg mt-2 pt-3 border-[.5px] border-stroke w-full  px-[13px] hidden'
                 />
-                {item.progress&&<ProgressBar progressPercentage={progress} height='h-[5px] overflow-hidden mt-[5px]'/>}
+                {item.progress&&<ProgressBar progressPercentage={item.progress} height='h-[5px] overflow-hidden mt-[5px]'/>}
             </label>
             )
           })}
         </div>
-      {progress&&<ProgressBar progressPercentage={progress}/>}
         <div className='flex justify-center pb-12 pt-5'>
                 <button style={{background:"linear-gradient(90.3deg, #9C3FE4 0.16%, #C65647 101.62%)"}} className='w-[314px]  h-[50px] rounded-[5px] text-white flex justify-center items-center gap-2'>Дальше {loading&&<Image width={24} src={Loading} alt='load' />}</button>
 
