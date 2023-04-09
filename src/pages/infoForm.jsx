@@ -287,7 +287,7 @@ console.log(Store.corousel);
           {Store.corousel.map(item=>{
             return (
             <label key={item.id} className='text-white py-3' >
-              <div className=' rounded-lg mt-2 pt-3 border-[.5px] flex justify-center items-center flex-col border-stroke w-[100px] px-[13px] h-[100px]' style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }}>
+              <div className=' overflow-y-scroll rounded-lg mt-2 pt-3 border-[.5px] flex  items-center flex-col border-stroke w-[100px] px-[13px] h-[100px]' style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }}>
                 {item.file&&<p className='tex-white break-all'>{item.file.name}</p>} 
                 </div> 
                 <input  name={item.id} type="file" onChange={handleCorousel} style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 
