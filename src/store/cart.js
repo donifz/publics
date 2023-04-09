@@ -18,22 +18,27 @@ class Store {
         {
             id:"1",
             file:null,
+            progress:null
         },
         {
             id:"2",
             file:null,
+            progress:null
         },
         {
             id:"3",
             file:null,
+            progress:null
         },
         {
             id:"4",
             file:null,
+            progress:null
         },
         {
             id:"5",
             file:null,
+            progress:null
         },
     ]
     constructor() {

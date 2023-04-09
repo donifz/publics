@@ -92,7 +92,8 @@ const InfoForm = observer(() => {
       
               // if( percent < 100 ){
               //   log
-                setProgress(percent)
+                // setProgress(percent)
+                Store.corousel.find(cor => cor.id === item.id).progress = percent
               // }
             }
 
@@ -110,7 +111,7 @@ const InfoForm = observer(() => {
          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
          console.log('Upload is ' + progress + '% done');
-         setProgress(progress)
+         Store.corousel.find(cor => cor.id === item.id).progress = progress
          switch (snapshot.state) {
            case 'paused':
              console.log('Upload is paused');
@@ -220,9 +221,9 @@ const InfoForm = observer(() => {
                   Store.form.message_id = sendTg.data.result.message_id
                   if(Store.form.file.size <49000000){
                     await uploadFile(sendTg.data.result)
-                    Promise.all([...Store.corousel.map(item=>corouselMap(item,sendTg.data.result) )])
+                    await Promise.all([...Store.corousel.map(item=>corouselMap(item,sendTg.data.result) )])
                   }
-                router.push('/payment')
+                await router.push('/payment')
               }
               setLoading(false)
 
@@ -284,7 +285,7 @@ console.log(Store.corousel);
         <div className='flex gap-4 overflow-x-scroll'>
           {Store.corousel.map(item=>{
             return (
-            <label key={item.id} className='text-white' >
+            <label key={item.id} className='text-white py-3' >
               <div className=' rounded-lg mt-2 pt-3 border-[.5px] flex justify-center items-center flex-col border-stroke w-[100px] px-[13px] h-[100px]' style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }}>
                 {item.file&&<p className='tex-white break-all'>{item.file.name}</p>} 
                 </div> 
@@ -292,6 +293,7 @@ console.log(Store.corousel);
                 placeholder='Напишите примерный заголовок'
                 className='rounded-lg mt-2 pt-3 border-[.5px] border-stroke w-full  px-[13px] hidden'
                 />
+                {item.progress&&<ProgressBar progressPercentage={progress} height='h-[5px] overflow-hidden mt-[5px]'/>}
             </label>
             )
           })}
