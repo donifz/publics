@@ -4,7 +4,7 @@ import arrow from "../icons/arrowCircle.svg";
 import line from "../icons/line.svg";
 import download from "../icons/download.svg";
 import Loading from "../icons/loader.svg";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Store from '@/store/cart';
 import { storage } from '../firebase';
@@ -13,8 +13,7 @@ import { v4 } from "uuid";
 import { ProgressBar } from '@/components/ProgressBar';
 import { useRouter } from 'next/router';
 import { observer } from 'mobx-react-lite';
-import { corousel } from '@/readyPakckages';
-import { ST } from 'next/dist/shared/lib/utils';
+import successIcon from "../icons/success.svg";
 
 
 const InfoForm = observer(() => {
@@ -34,16 +33,25 @@ const InfoForm = observer(() => {
     const inputChangeHandler = (event ) => {
         const {name, value} = event.target
         // setResponseBody({...responseBody, [name]: value})
+        if(name === "title"){
+          if(value.length>30) return
+        }
+        if(name === "text"){
+          if(value.length>200) return
+        }
         Store.form ={...Store.form, [name]: value}
-        
-        console.log(Store.form);
+
       }
 
+      useEffect(()=>{
+        if(Store.total === 0){
+          router.push("/instaPublics")
+        }
+      },[Store.total])
 
     const handlePhoto = async (event) =>{
         // setUpload(event.target.files[0])
         Store.form = {...Store.form, file: event.target.files[0]}
-        console.log(Store.form);
         // const telegraphUrl = await uploadByBuffer(event.target.files[0], 'image/png')
         //   console.log(telegraphUrl);
     }
@@ -237,7 +245,6 @@ const InfoForm = observer(() => {
       }) 
     }
 
-console.log(Store.corousel);
 
   return (
     <Layout>
@@ -254,27 +261,32 @@ console.log(Store.corousel);
       <p className="text-xl font-extrabold text-white text-center mt-[37px]">Информация</p>
       <form className='text-white flex flex-col gap-5' onSubmit={handleSubmit}>
         <label >
-          <p>Заголовок</p>  
-            <input onChange={inputChangeHandler} name='title' type="text" style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 
+          <p>Заголовок <span>30/{Store.form.title.length}</span></p>  
+            <input onChange={inputChangeHandler} name='title' value={Store.form.title} type="text" style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 
             placeholder='Напишите примерный заголовок'
             className='rounded-lg mt-2 border-[.5px] border-stroke w-full h-[59px] px-[13px]'
             />
+            {Store.form.title.length===30&&<p className='text-red-600'>Вы достигли максимума</p>}
         </label>
         <label >
-          <p>Текст под пост</p>  
-            <textarea onChange={inputChangeHandler} name="text" style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 
+          <p>Текст под пост <span>200/{Store.form.text.length}</span></p>  
+            <textarea onChange={inputChangeHandler} name="text" value={Store.form.text} style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 
             placeholder='Напишите примерный заголовок'
-            className='rounded-lg mt-2 pt-3 border-[.5px] border-stroke w-full h-[59px] px-[13px]'
+            className=' rounded-lg mt-2 pt-3 border-[.5px] border-stroke w-full h-[100px] px-[13px]'
             />
+            {Store.form.text.length===200&&<p className='text-red-600'>Вы достигли максимума</p>}
         </label>
         <label className='text-white' >
-          <p>Фотография или видео в формате 16x9 обложка</p>
-          <div className='rounded-lg mt-2 pt-3 border-[.5px] flex justify-center items-center flex-col border-stroke w-full px-[13px] h-[157px]' style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }}>
+          <p>Фотография или видео</p>
+          <div className='rounded-lg mt-2 py-3 border-[.5px] flex justify-center items-center flex-col border-stroke w-full px-[13px] h-[157px]' style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }}>
             {!Store.form.file&&<div className='flex flex-col items-center'>
               <Image src={download} alt="download"/>
                 <p className='text-stroke'>Загрузите фото или видео</p>
               </div>}
-              {Store.form.file&&<p className='tex-white break-all'>{Store.form.file.name}</p>} 
+              {Store.form.file&&<div className='flex flex-col justify-center items-center'>
+                  <Image src={successIcon} alt="success" width={80}/>
+                  Файл прикреплен
+                </div>} 
             </div>  
             <input required name='fileInput' type="file" onChange={handlePhoto} style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 
             placeholder='Напишите примерный заголовок'
@@ -282,13 +294,16 @@ console.log(Store.corousel);
             />
         </label>
           {progress&&<ProgressBar progressPercentage={progress}/>}
-        <p>Фотография или видео в формате 1x1 (карусель)</p>
-        <div className='flex gap-4 overflow-x-scroll'>
+        <p>Фотография или видео</p>
+        <div className='flex gap-4 overflow-x-scroll no-scrollbar'>
           {Store.corousel.map(item=>{
             return (
             <label key={item.id} className='text-white py-3' >
-              <div className=' overflow-y-scroll rounded-lg mt-2 pt-3 border-[.5px] flex  items-center flex-col border-stroke w-[100px] px-[13px] h-[100px]' style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }}>
-                {item.file&&<p className='tex-white break-all'>{item.file.name}</p>} 
+              <div className=' overflow-y-scroll no-scrollbar rounded-lg mt-2 py-3 border-[.5px] flex  items-center flex-col border-stroke w-[100px] px-[13px] h-[100px]' style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }}>
+                {item.file&&<div className='flex flex-col justify-center items-center'>
+                  <Image src={successIcon} alt="success" width={40}/>
+                  <span className='text-[10px] text-center'>Файл прикреплен</span> 
+                </div>} 
                 </div> 
                 <input  name={item.id} type="file" onChange={handleCorousel} style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 
                 placeholder='Напишите примерный заголовок'

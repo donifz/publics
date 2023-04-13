@@ -7,11 +7,12 @@ import lineMd from "../icons/line-md.svg";
 import download from "../icons/download.svg";
 import Store from "../store/cart";
 import { observer } from 'mobx-react-lite';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ProgressBar } from '@/components/ProgressBar';
 import axios from 'axios';
 import dynamic from "next/dynamic";
 import { toBase64 } from '@/utils';
+import successIcon from "../icons/success.svg";
 import { useRouter } from 'next/router';
 // import DateTimePicker from 'react-datetime-picker';
 const DateTimePicker = dynamic(
@@ -38,6 +39,12 @@ const Payment = observer(() => {
         setCheck(event.target.files[0])
         setPreview( await toBase64(event.target.files[0]))
     }
+    
+    useEffect(()=>{
+      if(Store.total === 0){
+        router.push("/instaPublics")
+      }
+    },[Store.total])
     const uploadCheck = async()=>{
       if(Store.total === 0) return
         const date = `${time.getDate()}.${time.getMonth()+1}.${time.getFullYear()} ${time.getHours()}:${(""+time.getMinutes()).length ===1?"0"+time.getMinutes():time.getMinutes()}`
@@ -65,6 +72,7 @@ const Payment = observer(() => {
 
         } )
         router.push('/success')
+        
         // setSuccess(true);
     }
 
@@ -102,12 +110,11 @@ const Payment = observer(() => {
         </ul>
       </div>
       <label className='flex justify-center my-4'>
-      {!preview&& <div className='rounded-lg mt-2 pt-3 relative z-10 overflow-hidden border-[.5px] flex justify-center items-center flex-col border-stroke w-[200px] px-[13px] h-[77px]' style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }}>
-                    <Image src={download} alt="download" width={36}/>
-                    <p className='text-stroke text-sm'>Загрузите чек</p>
-                
-                </div>}
-                {preview&&<Image src={preview} width={200} height={77} alt='check'/>}
+      <div className='rounded-lg mt-2  relative z-10 overflow-hidden border-[.5px] flex justify-center items-center flex-col border-stroke w-[200px] px-[13px] h-[77px]' style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }}>
+                   { !preview&& <div className='flex flex-col items-center'> <Image src={download} alt="download" width={36}/>
+                    <p className='text-stroke text-sm'>Загрузите чек</p></div>}
+                {preview&&<div className='text-white text-center'><Image src={successIcon} width={40} alt='check'/> Чек</div> }
+                </div>
                 <input  name='fileInput' type="file" onChange={handlePhoto} style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 
             placeholder='Напишите примерный заголовок'
             className='rounded-lg mt-2 pt-3 border-[.5px] border-stroke w-full  px-[13px] hidden'

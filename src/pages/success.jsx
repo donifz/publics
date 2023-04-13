@@ -4,11 +4,21 @@ import arrow from "../icons/arrowCircle.svg";
 import success from "../icons/success.svg";
 import line from "../icons/line.svg";
 import { observer } from 'mobx-react-lite';
-
+import { useEffect } from 'react';
+import Store from "../store/cart";
 
 const InfoForm = observer(() => {
 
-
+  useEffect(()=>{
+    Store.resetPublics()
+    Store.form = {
+      file:null,
+      message_id:"",
+      text:"",
+      title:""
+    }
+    Store.corousel = Store.corousel.map(item => ({...item, file:null, progress:null}))
+  },[])
 
   return (
     <Layout>

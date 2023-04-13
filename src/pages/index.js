@@ -9,17 +9,19 @@ import Layout from "@/Layout";
 
 const menu = [
   {id:1,
-  text:"Кыргызскоязычные паблики ",
-  href:"/kgPublics"
-  },{id:2,
-  text:"Русскоязычные паблики ",
-  href:"/ruPublics"
-  },{id:1,
+  text:"INSTAGRAM ПАБЛИКИ",
+  href:"/instaPublics",
+  status:"active"
+  },
+  {id:2,
   text:"Инфлюенсеры",
-  href:"/inluence"
-  },{id:1,
+  href:"/inluence",
+  status:"soon"
+  },
+  {id:3,
   text:"СМИ",
-  href:"/Smi"
+  href:"/Smi",
+  status:"soon"
   },
 ]
 

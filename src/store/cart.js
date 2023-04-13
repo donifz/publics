@@ -97,7 +97,7 @@ class Store {
     }
     get moreSubscribers (){
         return this.kgData.sort((a,b) =>{
-            return a.followersNumber - b.followersNumber
+            return b.followersNumber - a.followersNumber
         })
         
     }
@@ -107,17 +107,50 @@ class Store {
         })
         
     }
-    get moreSubscribersRu (){
+    get morePriceRu (){
         return this.searchedRu.sort((a,b) =>{
-            return a.followersNumber - b.followersNumber
+            if ((a.post.price+a.stories.price) < (b.post.price+b.stories.price)) {
+                return 1;
+              }
+              if ((b.post.price+b.stories.price) < (a.post.price+a.stories.price)){
+                return -1;
+              }
+              // a должно быть равным b
+              return 0;
         })
         
     }
-    get lessSubscribersRu (){
+    get lessPriceRu (){
         return this.searchedRu.sort((a,b) =>{
-            return b.followersNumber - a.followersNumber
+            if ((a.post.price+a.stories.price) < (b.post.price+b.stories.price)) {
+                return -1;
+              }
+              if ((b.post.price+b.stories.price) < (a.post.price+a.stories.price)){
+                return 1;
+              }
+              // a должно быть равным b
+              return 0;
         })
         
+    }
+   
+    get subscribersMoreRu (){
+        return this.searchedRu.sort((a,b) =>{
+            if (a.followersNumber < b.followersNumber) {
+                return 1;
+              }
+              if (a.followersNumber > b.followersNumber) {
+                return -1;
+              }
+              // a должно быть равным b
+              return 0;
+        })
+        
+    }
+    resetPublics(){
+        this.ruData =  this.searchedRu.map(item=>{
+            return {...item, post:{...item.post, qty: 0}, stories:{...item.stories, qty: 0}}
+        } )
     }
 
     moreSubscribersAction(type){
@@ -129,10 +162,17 @@ class Store {
         }
     }
     moreSubscribersActionRu(type){
+        if(type === "subs"){
+            this.ruData = this.subscribersMoreRu
+            return
+        }
+        if(type === "more"){
+            this.ruData = this.morePriceRu
+            return
+        }
         if(type === "less"){
-            this.ruData = this.lessSubscribersRu
-        }else{
-            this.ruData = this.moreSubscribersRu
+            this.ruData = this.lessPriceRu
+            return
 
         }
     }
