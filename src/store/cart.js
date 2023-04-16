@@ -8,7 +8,9 @@ class Store {
     ruData = db
     searchKg = ""
     searchRu = ""
+    package = null
     form = {
+        tel:"",
         title: "",
         text:"",
         file:null,

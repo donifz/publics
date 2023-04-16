@@ -18,6 +18,7 @@ const InfoForm = observer(() => {
       title:""
     }
     Store.corousel = Store.corousel.map(item => ({...item, file:null, progress:null}))
+    Store.package = null
   },[])
 
   return (

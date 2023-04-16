@@ -6,6 +6,8 @@ import line from "../icons/line.svg";
 import lineMd from "../icons/line-md.svg";
 import Link from "next/link";
 import Layout from "@/Layout";
+import Store from '@/store/cart';
+
 
 const menu = [
   {id:1,
@@ -14,11 +16,16 @@ const menu = [
   status:"active"
   },
   {id:2,
+  text:"Пакеты",
+  href:"/packages",
+  status:"active"
+  },
+  {id:3,
   text:"Инфлюенсеры",
   href:"/inluence",
   status:"soon"
   },
-  {id:3,
+  {id:4,
   text:"СМИ",
   href:"/Smi",
   status:"soon"
@@ -41,14 +48,19 @@ export default function Home() {
               <Image className="absolute -top-7" src={arrow}/>
             </div>
             <p className="text-xl font-extrabold text-white text-center mt-[37px]">Выберите платформу</p>
-            <p className="font-normal text-[10px] text-white text-center">(можно выбрать несколько)</p>
+            {/* <p className="font-normal text-[10px] text-white text-center">(можно выбрать несколько)</p> */}
             <Image className="mt-[33px] mb-[49px] flex justify-center w-full" src={lineMd}/>
             <menu className="w-full flex flex-col gap-5">
             {
               menu.map(item=>{
+                if(item.status === 'soon'){
+                  return (<li className="w-full h-[62px] border-[0.5px] border-white rounded-[5px] flex pl-[32px] " key={item.key}>
+                  <span className="w-full h-full text-xl justify-between font-normal text-white flex items-center text-stone-600 pr-4">{item.text} <p>Скоро</p> </span>
+                </li>)
+                }
                 return (
                     <li className="w-full h-[62px] border-[0.5px] border-white rounded-[5px] flex pl-[32px] " key={item.key}>
-                      <Link className="w-full h-full text-xl font-normal text-white flex items-center" href={item.href}>{item.text}</Link>
+                      <Link className="w-full h-full text-xl font-normal text-white flex items-center" onClick={()=> Store.package=null} href={item.href}>{item.text}</Link>
                     </li>
                 )
               })

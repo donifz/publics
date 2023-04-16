@@ -42,12 +42,13 @@ const InfoForm = observer(() => {
         Store.form ={...Store.form, [name]: value}
 
       }
-
+console.log(Store.package);
       useEffect(()=>{
-        if(Store.total === 0){
+        
+        if(Store.total === 0&&!Store.package){
           router.push("/instaPublics")
         }
-      },[Store.total])
+      },[Store])
 
     const handlePhoto = async (event) =>{
         // setUpload(event.target.files[0])
@@ -209,6 +210,7 @@ const InfoForm = observer(() => {
           console.log(bigFile);
         }
         let message = ""
+            message += `<b>Телефон: ${Store.form.tel}</b>\n`
             message += `<b>Заголовок: ${Store.form.title}</b>\n`
             message += `<b>Текст: ${Store.form.text}</b>\n`
             message += `<b>Ссылка на видео: ${bigFile}</b>\n`
@@ -218,6 +220,9 @@ const InfoForm = observer(() => {
             message += `${item.post.qty !==0?`<b>Пост: ${item.post.qty}</b>  `:""}${item.stories.qty !==0?`<b>Сторис: ${item.stories.qty}</b>`:""}\n`
             message += `----------------------------\n`
         })
+        if(Store.package){
+          message += `<b>Пакет: ${Store.package.name}</b>\n`
+        }
 
         const sendTg = await axios.post(URL_API_MESSAGE, {
             chat_id:CHAT_ID,
@@ -260,6 +265,14 @@ const InfoForm = observer(() => {
       </div>
       <p className="text-xl font-extrabold text-white text-center mt-[37px]">Информация</p>
       <form className='text-white flex flex-col gap-5' onSubmit={handleSubmit}>
+      <label >
+          <p>Ваш номер телефона <span>30/{Store.form.title.length}</span></p>  
+            <input onChange={inputChangeHandler} required name='tel' value={Store.form.tel} type="tel" style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 
+            placeholder='Номер телефона'
+            className='rounded-lg mt-2 border-[.5px] border-stroke w-full h-[59px] px-[13px]'
+            />
+            {/* {Store.form.title.length===30&&<p className='text-red-600'>Вы достигли максимума</p>} */}
+        </label>
         <label >
           <p>Заголовок <span>30/{Store.form.title.length}</span></p>  
             <input onChange={inputChangeHandler} name='title' value={Store.form.title} type="text" style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 

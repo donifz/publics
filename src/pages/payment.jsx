@@ -41,19 +41,19 @@ const Payment = observer(() => {
     }
     
     useEffect(()=>{
-      if(Store.total === 0){
-        router.push("/instaPublics")
+      if(Store.total === 0&&!Store.package){
+        router.push("/")
       }
-    },[Store.total])
+    },[Store])
     const uploadCheck = async()=>{
-      if(Store.total === 0) return
+      if(Store.total === 0&&Store.package === "") return
         const date = `${time.getDate()}.${time.getMonth()+1}.${time.getFullYear()} ${time.getHours()}:${(""+time.getMinutes()).length ===1?"0"+time.getMinutes():time.getMinutes()}`
         // let type = check.file.type==="image/jpeg"?{url:URL_API_DOCUMENT, name:"document"}:{url:URL_API_Video, name:"video"}
         const formData = new FormData();
         formData.append('chat_id',CHAT_ID);
         formData.append("document",check);
         formData.append('reply_to_message_id',Store.form.message_id);
-        formData.append('caption',`Заголовок: ${Store.form.title} \nВремя: ${!defaultTime?"30 минут":date} \nИтого: ${Store.total} сом`);
+        formData.append('caption',`Телефон: ${Store.form.tel} \nЗаголовок: ${Store.form.title} \nВремя: ${!defaultTime?"30 минут":date} \nИтого: ${Store.package? Store.package.price :Store.total} сом`);
 
         await axios.post(URL_API_DOCUMENT,formData, {
             headers:{
@@ -71,6 +71,7 @@ const Payment = observer(() => {
             }
 
         } )
+
         router.push('/success')
         
         // setSuccess(true);
@@ -123,7 +124,7 @@ const Payment = observer(() => {
         {progress&&<ProgressBar progressPercentage={progress}/>}
       <div className='w-full h-[62px] border-[0.5px] border-white rounded-[5px] flex flex-col text-white justify-center text-center mt-3.5'>
                         <p>Счет на оплату</p>
-                        <p>{Store.total} сом</p>
+                        <p>{Store?.package? Store?.package.price: Store.total} сом</p>
       </div>
       
     </div>
