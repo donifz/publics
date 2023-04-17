@@ -38,6 +38,8 @@ const InfoForm = observer(() => {
         }
         if(name === "text"){
           if(value.length>200) return
+        }if(name === "tel"){
+          if(value.length>10) return
         }
         Store.form ={...Store.form, [name]: value}
 
@@ -266,7 +268,7 @@ console.log(Store.package);
       <p className="text-xl font-extrabold text-white text-center mt-[37px]">Информация</p>
       <form className='text-white flex flex-col gap-5' onSubmit={handleSubmit}>
       <label >
-          <p>Ваш номер телефона <span>30/{Store.form.title.length}</span></p>  
+          <p>Ваш номер телефона <span>10/{Store.form.tel.length}</span></p>  
             <input onChange={inputChangeHandler} required name='tel' value={Store.form.tel} type="tel" style={{background:"radial-gradient(90.16% 143.01% at 15.32% 21.04%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.0447917) 77.08%, rgba(255, 255, 255, 0) 100%)",backgroundBlendMode: "overlay, normal",backdropFilter: "blur(6.07811px)" }} 
             placeholder='Номер телефона'
             className='rounded-lg mt-2 border-[.5px] border-stroke w-full h-[59px] px-[13px]'
