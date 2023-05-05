@@ -45,7 +45,7 @@ const Test = () => {
               <Image className="absolute 0" src={line}/>
               <Image className="absolute -top-7" src={arrow}/>
             </div>
-            <p className="text-xl font-extrabold text-white text-center mt-[37px]">Выберите платформу</p>
+            <p className="text-xl font-extrabold text-white text-center pt-[37px]">Выберите платформу</p>
             {/* <p className="font-normal text-[10px] text-white text-center">(можно выбрать несколько)</p> */}
             <Image className="mt-[33px] mb-[49px] flex justify-center w-full" src={lineMd}/>
             <menu className="w-full flex flex-col gap-5">

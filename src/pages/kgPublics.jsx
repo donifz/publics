@@ -33,7 +33,7 @@ const KgPublics = observer(() => {
           className="h-full rounded-[10px] mt-[69px] relative px-[13px]">
             <div className='relative'>
             
-            </div>
+            
                 
                 <div className='flex gap-[17px] -top-7 relative z-10 w-full'>
                     <button className='bg-purple text-white text-xs w-full h-[55px] justify-center rounded-[5px] flex items-center relative'>Выберите из списка 
@@ -117,6 +117,7 @@ const KgPublics = observer(() => {
                         )
                     })}
                 </menu>
+                </div>
           </div>
             <div className='flex justify-center pb-12 pt-5'>
                 <button style={{background:"linear-gradient(90.3deg, #9C3FE4 0.16%, #C65647 101.62%)"}} className='w-[314px]  h-[50px] rounded-[5px] text-white' 
