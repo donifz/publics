@@ -24,6 +24,11 @@
     stroke: #fff !important;
 }
 
+.react-datetime-picker__clock--open{
+    display: none;
+}
+
+
 @layer utilities {
     /* Chrome, Safari and Opera */
     .no-scrollbar::-webkit-scrollbar {
